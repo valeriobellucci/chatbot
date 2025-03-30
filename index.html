@@ -6,7 +6,7 @@
   <style>
     body {
       font-family: sans-serif;
-      text-align: center;
+      text-align: justify;
       margin-top: 100px;
     }
     input, button {
@@ -31,26 +31,36 @@
   <script>
     async function ask() {
       const question = document.getElementById("question").value;
+      const question = inputField.value.trim();
+
+      if (!question) return; // don't submit empty
+      
       const responseDiv = document.getElementById("response");
       responseDiv.innerHTML = "Thinking...";
 
-      const res = await fetch("https://resulting-contain-forth-vacuum.trycloudflare.com/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: question }),
-      });
+      // Clear the input field
+      inputField.value = "";
 
-      const data = await res.json();
-      responseDiv.innerHTML = data.response || "Error: no response received.";
+      try {
+        const res = await fetch("https://resulting-contain-forth-vacuum.trycloudflare.com/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: question }),
+        });
+
+        const data = await res.json();
+        responseDiv.innerHTML = data.response || "⚠️ No response received.";
+      } catch (error) {
+        responseDiv.innerHTML = "⚠️ Error: " + error.message;
+      }
     }
-  </script>
-  <script>
+
+    // Handle Enter key
     document.getElementById("question").addEventListener("keydown", function(event) {
       if (event.key === "Enter") {
         ask();
       }
     });
   </script>
-
 </body>
 </html>

@@ -21,14 +21,103 @@
       font-size: 16px;                /* Increases text size for readability */
     }
 
-    /* # is a CSS/JavaScript selector for an element with a specific id. */
-    #response {
-      margin-top: 20px;               /* Adds spacing above the response */
-      max-width: 600px;               /* Limits how wide the response box can get */
-      margin-left: auto;              /* Horizontally centers the response box */
-      margin-right: auto;
-      font-style: italic;             /* Makes the response text italic */
+    /* 
+      The '#' symbol targets a specific element by its unique ID.
+      Here, it styles the element with id="chatbox".
+    */
+    #chatbox {
+      /* 
+        Sets the top margin to 30px, and auto margins on the left and right. 
+        This centers the chatbox horizontally while spacing it slightly from the top.
+      */
+      margin: 30px auto 0 auto;
+    
+      /*
+        Limits the maximum width of the chatbox to 600 pixels.
+        On smaller screens it can be narrower, but never wider than 600px.
+      */
+      max-width: 600px;
+    
+      /*
+        Fixes the height of the chatbox to 300px.
+        Combined with overflow-y: auto, this allows it to scroll when content overflows.
+      */
+      height: 300px;
+    
+      /*
+        Enables a vertical scrollbar if the content exceeds the height of the box.
+        This is what makes the chat history scrollable.
+      */
+      overflow-y: auto;
+    
+      /*
+        Adds 10px of space inside the box on all sides.
+        Prevents text from touching the edges of the box.
+      */
+      padding: 10px;
+    
+      /*
+        Adds a thin, light gray border around the chatbox.
+      */
+      border: 1px solid #ccc;
+    
+      /*
+        Rounds the corners of the border to give a soft, modern appearance.
+      */
+      border-radius: 10px;
+    
+      /*
+        Aligns the chat text to the left instead of the center.
+        This makes it easier to read messages in a conversation format.
+      */
+      text-align: left;
+    
+      /*
+        Sets a very light gray background color for the chatbox.
+        This helps visually separate it from the rest of the white page.
+      */
+      background-color: #f9f9f9;
+    
+      /*
+        Ensures that line breaks and spacing in the text are preserved as written.
+        This allows multi-line responses or formatting to be displayed properly.
+      */
+      white-space: pre-wrap;
     }
+
+    /* 
+      Styles elements with the class "user".
+      These are the user's messages in the chat.
+    */
+    .user {
+      /*
+        Makes the user's message bold to distinguish it from the bot.
+      */
+      font-weight: bold;
+    
+      /*
+        Adds space above each user message.
+        Helps visually separate messages from each other.
+      */
+      margin-top: 10px;
+    }
+
+    /* 
+      Styles elements with the class "bot".
+      These are the bot’s responses in the chat.
+    */
+    .bot {
+      /*
+        Makes the bot’s message italic to visually differentiate it from the user's message.
+      */
+      font-style: italic;
+    
+      /*
+        Adds space below the bot's reply to create separation before the next message.
+      */
+      margin-bottom: 10px;
+    }
+
   </style>
 </head>
 
@@ -42,37 +131,62 @@
   <!-- Button to trigger the chatbot request -->
   <button onclick="ask()">Send</button>
 
-  <!-- Where the chatbot's response will be displayed -->
-  <div id="response"></div>
+  <!-- Scrollable chat history container -->
+  <div id="chatbox"></div>
 
   <!-- ====== JavaScript for chatbot interaction ====== -->
   <script>
-    // This function is triggered when the user clicks "Send" or presses Enter
+    // This async function is triggered when the user clicks the "Send" button or presses Enter
     async function ask() {
-      // Get the question typed by the user
-      const question = document.getElementById("question").value;
-
-      // Get reference to the response container
-      const responseDiv = document.getElementById("response");
-
-      // Show a temporary message while waiting for the server's reply
-      responseDiv.innerHTML = "Thinking...";
-
-      // Clear the input field
-      document.getElementById("question").value = "";
-
-      // Send the question to the chatbot backend via POST request
-      const res = await fetch("https://ensures-products-charge-merchants.trycloudflare.com/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },         // Tell the server we're sending JSON
-        body: JSON.stringify({ message: question }),             // Send the user question
-      });
-
-      // Wait for JSON response from the server
-      const data = await res.json();
-
-      // Display the response or a fallback error message
-      responseDiv.innerHTML = data.response || "Error: no response received.";
+      // Get the <input> element where the user typed their question
+      const questionInput = document.getElementById("question");
+    
+      // Get the <div> that will show the entire chat history
+      const chatbox = document.getElementById("chatbox");
+    
+      // Get the actual text typed by the user
+      const question = questionInput.value;
+    
+      // Prevent sending empty or whitespace-only questions
+      if (!question.trim()) return;
+    
+      // Append the user's message to the chatbox with a "You:" label
+      chatbox.innerHTML += `<div class="user">You: ${question}</div>`;
+    
+      // Add a temporary "Thinking..." message to show the bot is processing
+      chatbox.innerHTML += `<div class="bot">Thinking...</div>`;
+    
+      // Automatically scroll to the bottom of the chatbox to show the latest messages
+      chatbox.scrollTop = chatbox.scrollHeight;
+    
+      // Clear the input field so the user can type a new question
+      questionInput.value = "";
+    
+      try {
+        // Send a POST request to the backend with the question as JSON
+        const res = await fetch("https://ensures-products-charge-merchants.trycloudflare.com/chat", {
+          method: "POST", // HTTP method
+          headers: { "Content-Type": "application/json" }, // Tell server we're sending JSON
+          body: JSON.stringify({ message: question }) // Convert JS object to JSON string
+        });
+    
+        // Parse the server's response into a JavaScript object
+        const data = await res.json();
+    
+        // Get all elements with the class "bot" — the last one is the "Thinking..." message
+        const botResponses = chatbox.getElementsByClassName("bot");
+    
+        // Replace the "Thinking..." message with the actual response, or fallback if missing
+        botResponses[botResponses.length - 1].innerText = `Bot: ${data.response || "Error: no response received."}`;
+    
+        // Scroll to the bottom again in case new content pushed things down
+        chatbox.scrollTop = chatbox.scrollHeight;
+    
+      } catch (err) {
+        // In case of a network or server error, show a meaningful error message
+        const botResponses = chatbox.getElementsByClassName("bot");
+        botResponses[botResponses.length - 1].innerText = "Bot: Error contacting the server.";
+      }
     }
   </script>
 

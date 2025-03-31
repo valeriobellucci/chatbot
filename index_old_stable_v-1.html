@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Cultural Heritage Chatbot</title>
+  <meta charset="UTF-8" />
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      margin-top: 100px;
+    }
+    input, button {
+      padding: 10px;
+      font-size: 16px;
+    }
+    #response {
+      margin-top: 20px;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+  <h1>💬 Ask the Chatbot</h1>
+  <input id="question" type="text" placeholder="Type your question..." size="40" />
+  <button onclick="ask()">Send</button>
+  <div id="response"></div>
+
+  <script>
+    async function ask() {
+      const question = document.getElementById("question").value;
+      const responseDiv = document.getElementById("response");
+      responseDiv.innerHTML = "Thinking...";
+      
+      // Clear the input field
+      document.getElementById("question").value = "";
+
+      const res = await fetch("https://ensures-products-charge-merchants.trycloudflare.com/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: question }),
+      });
+
+      const data = await res.json();
+      responseDiv.innerHTML = data.response || "Error: no response received.";
+    }
+  </script>
+  <script>
+    document.getElementById("question").addEventListener("keydown", function(event) {
+      if (event.key === "Enter") {
+        ask();
+      }
+    });
+  </script>
+
+</body>
+</html>

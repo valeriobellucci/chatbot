@@ -18,7 +18,7 @@
 
     input, button {
       padding: 10px;                  /* Adds padding inside input/button */
-      font-size: 16px;                /* Increases text size for readability */
+      font-size: 20px;                /* Increases text size for readability, 16px original */
     }
 
     /* 
@@ -33,16 +33,22 @@
       margin: 30px auto 0 auto;
     
       /*
-        Limits the maximum width of the chatbox to 600 pixels.
-        On smaller screens it can be narrower, but never wider than 600px.
+        Limits the maximum width of the chatbox, original 600 pixels.
+        On smaller screens it can be narrower, but never wider than 900px.
       */
-      max-width: 600px;
+      max-width: 900px;
     
       /*
-        Fixes the height of the chatbox to 300px.
+        Fixes the max height of the chatbox.
         Combined with overflow-y: auto, this allows it to scroll when content overflows.
       */
-      height: 300px;
+      max-height: 500px;
+      
+      /*
+        Fixes the min height of the chatbox.
+        Always at least visible with 200 pixels height.
+      */
+      min-height: 200px;   
     
       /*
         Enables a vertical scrollbar if the content exceeds the height of the box.
@@ -96,10 +102,10 @@
       font-weight: bold;
     
       /*
-        Adds space above each user message.
+        Adds space above each user message. Original 10 px.
         Helps visually separate messages from each other.
       */
-      margin-top: 10px;
+      margin-top: 20px;
     }
 
     /* 
@@ -114,8 +120,9 @@
     
       /*
         Adds space below the bot's reply to create separation before the next message.
+        Original 10 px.
       */
-      margin-bottom: 10px;
+      margin-bottom: 20px;
     }
 
   </style>

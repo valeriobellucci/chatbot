@@ -1,59 +1,88 @@
 <!DOCTYPE html>
+<!-- Declares that this is an HTML5 document -->
 <html>
 <head>
   <title>Cultural Heritage Chatbot</title>
+  <!-- Sets the page title shown in the browser tab -->
+
   <meta charset="UTF-8" />
+  <!-- Ensures proper text encoding (including emojis, non-English characters) -->
+
   <style>
+    /* ====== Page Styling ====== */
     body {
-      font-family: sans-serif;
-      text-align: center;
-      margin-top: 100px;
+      font-family: sans-serif;        /* Sets a clean sans-serif font */
+      text-align: center;             /* Centers all text on the page */
+      margin-top: 100px;              /* Adds space from the top of the page */
     }
+
     input, button {
-      padding: 10px;
-      font-size: 16px;
+      padding: 10px;                  /* Adds padding inside input/button */
+      font-size: 16px;                /* Increases text size for readability */
     }
+
+    /* # is a CSS/JavaScript selector for an element with a specific id. */
     #response {
-      margin-top: 20px;
-      max-width: 600px;
-      margin-left: auto;
+      margin-top: 20px;               /* Adds spacing above the response */
+      max-width: 600px;               /* Limits how wide the response box can get */
+      margin-left: auto;              /* Horizontally centers the response box */
       margin-right: auto;
-      font-style: italic;
+      font-style: italic;             /* Makes the response text italic */
     }
   </style>
 </head>
+
 <body>
+  <!-- Page header/title -->
   <h1>💬 Ask the Chatbot</h1>
+
+  <!-- Text input for the user to type a question -->
   <input id="question" type="text" placeholder="Type your question..." size="40" />
+
+  <!-- Button to trigger the chatbot request -->
   <button onclick="ask()">Send</button>
+
+  <!-- Where the chatbot's response will be displayed -->
   <div id="response"></div>
 
+  <!-- ====== JavaScript for chatbot interaction ====== -->
   <script>
+    // This function is triggered when the user clicks "Send" or presses Enter
     async function ask() {
+      // Get the question typed by the user
       const question = document.getElementById("question").value;
+
+      // Get reference to the response container
       const responseDiv = document.getElementById("response");
+
+      // Show a temporary message while waiting for the server's reply
       responseDiv.innerHTML = "Thinking...";
-      
+
       // Clear the input field
       document.getElementById("question").value = "";
 
+      // Send the question to the chatbot backend via POST request
       const res = await fetch("https://ensures-products-charge-merchants.trycloudflare.com/chat", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: question }),
+        headers: { "Content-Type": "application/json" },         // Tell the server we're sending JSON
+        body: JSON.stringify({ message: question }),             // Send the user question
       });
 
+      // Wait for JSON response from the server
       const data = await res.json();
+
+      // Display the response or a fallback error message
       responseDiv.innerHTML = data.response || "Error: no response received.";
     }
   </script>
+
   <script>
+    // Allow user to press "Enter" to submit the question
     document.getElementById("question").addEventListener("keydown", function(event) {
       if (event.key === "Enter") {
-        ask();
+        ask();  // Call the same function used by the "Send" button
       }
     });
   </script>
-
 </body>
 </html>

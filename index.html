@@ -16,7 +16,22 @@
       margin-top: 100px;              /* Adds space from the top of the page */
     }
 
-    input, button {
+    textarea {
+      padding: 10px;
+      font-size: 20px;
+      max-width: 900px;
+      width: 90%;
+      min-height: 60px;
+      overflow-y: hidden;   /* Hide scrollbar while auto-expanding */
+      resize: none;         /* Prevent manual resizing */
+      white-space: pre-wrap;
+      line-height: 1.4;
+      max-height: 200px; /* Limit vertical growth and enable scroll after that */
+      overflow-y: auto;
+    }
+
+
+    button {
       padding: 10px;                  /* Adds padding inside input/button */
       font-size: 20px;                /* Increases text size for readability, 16px original */
     }
@@ -134,7 +149,7 @@
   <h1>💬 Ask the Chatbot</h1>
 
   <!-- Text input for the user to type a question -->
-  <input id="question" type="text" placeholder="Type your question..." size="40" />
+  <textarea id="question" placeholder="Type your question..." rows="2"></textarea>
 
   <!-- Button to trigger the chatbot request -->
   <button onclick="ask()">Send</button>
@@ -206,5 +221,17 @@
       }
     });
   </script>
+
+  <script>
+    // Auto-resize the height of the input field based on input length.
+  const textarea = document.getElementById("question");
+
+  textarea.addEventListener("input", () => {
+    textarea.style.height = "auto";               // Reset height
+    textarea.style.height = textarea.scrollHeight + "px"; // Set new height based on content
+  });
+</script>
+
+  
 </body>
 </html>

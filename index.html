@@ -38,12 +38,14 @@
       max-height: 200px; /* Limit vertical growth and enable scroll after that */
       overflow-y: auto;
       box-sizing: border-box;
+      vertical-align: top;      /* Align the textarea element itself (if needed in layout) */
+      padding-top: 10px;        /* Ensures text starts with space from top */
     }
 
     button {
       padding: 10px 16px;
       font-size: 20px;
-      height: 60px;        /* 🔒 Fixes the height to align with initial textarea height */
+      height: 40px;        /* 🔒 Fixes the height to align with initial textarea height */
       cursor: pointer;
     }
 
